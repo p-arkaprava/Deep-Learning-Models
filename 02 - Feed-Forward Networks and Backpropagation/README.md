@@ -45,7 +45,7 @@ Read this once; every notebook and README in the module uses it.
 
 The notes also name layers by role: $h1$, $h2$ (hidden) and $o$ (output), e.g. $o^{h1}=\sigma(W^{h1}x+b^{h1})$.
 
-> ℹ️ The notebooks were rewritten to use exactly this convention (columns = examples, $\delta=-\partial E/\partial net$, $\Delta w_{ji}=+\eta\,\delta_j\,x_{ji}$), so the code reads like the notes.
+> ℹ️ The notebooks were rewritten to use exactly this convention (columns = examples, $\delta=-\partial E/\partial net$, $\Delta w_{ji}=+\eta\ \delta_j\ x_{ji}$), so the code reads like the notes.
 
 ---
 
@@ -55,9 +55,9 @@ The notes also name layers by role: $h1$, $h2$ (hidden) and $o$ (output), e.g. $
 
 The forward pass computes and **stores** every $net$ and $o$. The backward pass multiplies local slopes from right to left (the chain rule) and gets every gradient in **one sweep**:
 
-$$\underbrace{\delta_k=o_k(1-o_k)(t_k-o_k)}_{\text{output neuron}}\qquad\underbrace{\delta_j=o_j(1-o_j)\sum_{s\in Down(j)}\delta_s\,w_{sj}}_{\text{hidden neuron}}\qquad\underbrace{\Delta w_{ji}=\eta\,\delta_j\,x_{ji}}_{\text{every weight}}$$
+$$\underbrace{\delta_k=o_k(1-o_k)(t_k-o_k)}_{\text{output neuron}}\qquad\underbrace{\delta_j=o_j(1-o_j)\sum_{s\in Down(j)}\delta_s\ w_{sj}}_{\text{hidden neuron}}\qquad\underbrace{\Delta w_{ji}=\eta\ \delta_j\ x_{ji}}_{\text{every weight}}$$
 
-In matrix form: $\;\delta^{[l]}=g'(net^{[l]})\odot(W^{[l+1]})^\top\delta^{[l+1]}$, $\;\Delta W^{[l]}=\eta\,\delta^{[l]}(o^{[l-1]})^\top$.
+In matrix form: $\ \delta^{[l]}=g'(net^{[l]})\odot(W^{[l+1]})^\top\delta^{[l+1]}$, $\ \Delta W^{[l]}=\eta\ \delta^{[l]}(o^{[l-1]})^\top$.
 
 **Intuition: passing the blame backwards.** The output layer is blamed first, using the targets. Each layer then passes blame to the layer before it, in proportion to the weights that connect them, gated by how sensitive each neuron was. Each layer only needs information from its neighbours (notes: *"only need info about next layer and previous layer"*).
 
@@ -68,7 +68,7 @@ In matrix form: $\;\delta^{[l]}=g'(net^{[l]})\odot(W^{[l+1]})^\top\delta^{[l+1]}
 | # | Topic | Core idea | Highlights |
 |---|---|---|---|
 | 01 | [Architecture and Parameter Counting](01%20-%20Architecture%20and%20Parameter%20Counting/) | params $=n_l(n_{l-1}+1)$ per layer | notes' 4-3-3-2 = 35, 4-5-3-2 = 51; MNIST net = 109,386 |
-| 02 | [Matrix-Form Forward Pass](02%20-%20Matrix-Form%20Forward%20Pass/) | $net=Wo+b,\;o=g(net)$, batch as columns | annotated $Wx+b$ heat-map, ~1000× faster than loops, a layer bending space |
+| 02 | [Matrix-Form Forward Pass](02%20-%20Matrix-Form%20Forward%20Pass/) | $net=Wo+b,\ o=g(net)$, batch as columns | annotated $Wx+b$ heat-map, ~1000× faster than loops, a layer bending space |
 | 03 | [Backprop for the Output Layer](03%20-%20Backprop%20for%20the%20Output%20Layer/) | $\delta_k=(t_k-o_k)o_k(1-o_k)$; softmax + CE gives $t-p$ | full numeric example, gradient checking, CE vs MSE race |
 | 04 | [Backprop for Hidden Layers](04%20-%20Backprop%20for%20Hidden%20Layers/) | $\delta_j=o_j(1-o_j)\sum_s\delta_sw_{sj}$ | complete backprop step by hand, every layer gradient-checked, vanishing gradients |
 | 05 | [Training a Small Network](05%20-%20Training%20a%20Small%20Network/) | mini-batch SGD + momentum | XOR learned by a 2-2-1 sigmoid net, spiral decision regions forming |

@@ -1,13 +1,13 @@
 # 04 · Backprop for Hidden Layers
 
 > **Module:** [02 - Feed-Forward Networks and Backpropagation](../) · **Notebook:** [`04_backprop_hidden_layers.ipynb`](04_backprop_hidden_layers.ipynb)
-> **Course notes:** page 5, "For deeper layers", $\Delta w_{ji}=\eta\,x_i\,o_j(1-o_j)\sum_{s\in Down(j)}\delta_sw_{sj}$, and "only need info about next layer and previous layer" · **Further reading:** Section 5 of [FFNN_Backpropagation_Guide Simplified.pdf](../FFNN_Backpropagation_Guide%20Simplified.pdf), Mitchell §4.5.3 and Table 4.2
+> **Course notes:** page 5, "For deeper layers", $\Delta w_{ji}=\eta\ x_i\ o_j(1-o_j)\sum_{s\in Down(j)}\delta_sw_{sj}$, and "only need info about next layer and previous layer" · **Further reading:** Section 5 of [FFNN_Backpropagation_Guide Simplified.pdf](../FFNN_Backpropagation_Guide%20Simplified.pdf), Mitchell §4.5.3 and Table 4.2
 
 ---
 
 ## 📌 The core idea in one sentence
 
-A hidden neuron has no target, so its error term is **borrowed from the neurons it feeds**: each downstream blame $\delta_s$ is sent back along the same wire, weighted by $w_{sj}$, summed, and scaled by the neuron's own slope, $\delta_j=o_j(1-o_j)\sum_s\delta_sw_{sj}$. After that, the update is the same as everywhere else: $\Delta w_{ji}=\eta\,\delta_j\,x_{ji}$.
+A hidden neuron has no target, so its error term is **borrowed from the neurons it feeds**: each downstream blame $\delta_s$ is sent back along the same wire, weighted by $w_{sj}$, summed, and scaled by the neuron's own slope, $\delta_j=o_j(1-o_j)\sum_s\delta_sw_{sj}$. After that, the update is the same as everywhere else: $\Delta w_{ji}=\eta\ \delta_j\ x_{ji}$.
 
 ![hidden blame](../figures/p2_hidden_blame.png)
 
@@ -22,7 +22,7 @@ A hidden neuron has no target, so its error term is **borrowed from the neurons 
 | $s$ | a neuron in the layer **after** $j$ |
 | $Down(j)$ | all neurons that receive $j$'s output (in a dense net: the whole next layer) |
 | $w_{ji}$, $w_{sj}$ | weight into $j$ from $i$; weight out of $j$ into $s$ |
-| $net_j,\;o_j$ | net input and output of $j$; $o_j=\sigma(net_j)$ |
+| $net_j,\ o_j$ | net input and output of $j$; $o_j=\sigma(net_j)$ |
 | $\delta_j=-\partial E/\partial net_j$ | error term of $j$ (notes' sign) |
 | $\delta_s$ | error term of downstream neuron $s$: **already known**, because we work backwards |
 | $\eta$ | learning rate |
@@ -46,14 +46,14 @@ $$\frac{\partial net_s}{\partial net_j}=\frac{\partial net_s}{\partial o_j}\cdot
 
 **Step 4.** Combine, using $\delta_j=-\partial E/\partial net_j$:
 
-$$\boxed{\delta_j=o_j(1-o_j)\sum_{s\in Down(j)}\delta_s\,w_{sj}}\qquad\boxed{\Delta w_{ji}=\eta\,\delta_j\,x_{ji}=\eta\,x_{ji}\,o_j(1-o_j)\sum_{s\in Down(j)}\delta_s\,w_{sj}}$$
+$$\boxed{\delta_j=o_j(1-o_j)\sum_{s\in Down(j)}\delta_s\ w_{sj}}\qquad\boxed{\Delta w_{ji}=\eta\ \delta_j\ x_{ji}=\eta\ x_{ji}\ o_j(1-o_j)\sum_{s\in Down(j)}\delta_s\ w_{sj}}$$
 
 The second box is the boxed formula in the notes.
 
 | | Output neuron $k$ | Hidden neuron $j$ |
 |---|---|---|
-| error term | $o_k(1-o_k)\,(t_k-o_k)$ (uses the **target**) | $o_j(1-o_j)\sum_s\delta_sw_{sj}$ (uses **downstream blame**) |
-| update | $\eta\,\delta_k\,x_{kj}$ | $\eta\,\delta_j\,x_{ji}$ |
+| error term | $o_k(1-o_k)\ (t_k-o_k)$ (uses the **target**) | $o_j(1-o_j)\sum_s\delta_sw_{sj}$ (uses **downstream blame**) |
+| update | $\eta\ \delta_k\ x_{kj}$ | $\eta\ \delta_j\ x_{ji}$ |
 
 **Intuition: passing the blame backwards.** If $j$ feeds $s$ through a strong wire, it shares much of $s$'s blame; through a weak wire, little. A negative weight flips the sign: if being more active *lowers* a too-low output, $j$ should become *less* active.
 
@@ -90,7 +90,7 @@ b2: relative error = 1.10e-10
 
 The sums $\sum_s\delta_sw_{sj}$ for all $j$ at once are the product $(W^{[l+1]})^\top\delta^{[l+1]}$: **the same weights, transposed, carry blame back along the same wires.**
 
-$$\delta^{[L]}=(T-O^{[L]})\odot g'(net^{[L]})\qquad\boxed{\delta^{[l]}=g'\big(net^{[l]}\big)\odot\big((W^{[l+1]})^\top\delta^{[l+1]}\big)}\qquad\boxed{\Delta W^{[l]}=\eta\,\delta^{[l]}(O^{[l-1]})^\top}$$
+$$\delta^{[L]}=(T-O^{[L]})\odot g'(net^{[L]})\qquad\boxed{\delta^{[l]}=g'\big(net^{[l]}\big)\odot\big((W^{[l+1]})^\top\delta^{[l+1]}\big)}\qquad\boxed{\Delta W^{[l]}=\eta\ \delta^{[l]}(O^{[l-1]})^\top}$$
 
 | Term | Shape | Meaning |
 |---|---|---|
@@ -103,7 +103,7 @@ $$\delta^{[L]}=(T-O^{[L]})\odot g'(net^{[L]})\qquad\boxed{\delta^{[l]}=g'\big(ne
 
 ![chain](../figures/c2_backprop_chain.png)
 
-**The algorithm** (Mitchell Table 4.2): ① forward pass, storing every $net$ and $o$; ② $\delta$ for the output layer; ③ $\delta$ for each hidden layer from the top down; ④ update every weight with $\Delta w=\eta\,\delta\,x$.
+**The algorithm** (Mitchell Table 4.2): ① forward pass, storing every $net$ and $o$; ② $\delta$ for the output layer; ③ $\delta$ for each hidden layer from the top down; ④ update every weight with $\Delta w=\eta\ \delta\ x$.
 
 ---
 
@@ -137,8 +137,8 @@ Each backward step uses only the $\delta$ of the **next** layer, the weights bet
 In arithmetic, backward ≈ 2 matrix products per layer vs 1 for forward, so a training step costs about 3 forward passes **for all gradients at once**. Brute force needs 2 forward passes **per parameter**:
 
 ```text
-forward    1.24 ms
-backward   1.29 ms   (≈ 1.0× forward on this machine)
+forward    1.21 ms
+backward   1.55 ms   (≈ 1.3× forward on this machine)
 numerical gradient would need 2 × 235,146 forward passes ≈ 0.2 hours
 ```
 

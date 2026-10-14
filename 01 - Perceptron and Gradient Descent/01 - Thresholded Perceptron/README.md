@@ -31,7 +31,7 @@ A perceptron **adds up its inputs, each multiplied by a weight, and answers YES 
 | Symbol | Meaning in plain words | Example (AND gate) |
 |---|---|---|
 | $n$ | number of real inputs | $2$ |
-| $x_1,\dots,x_n$ | input values (features) of one example | $x_1=1,\;x_2=0$ |
+| $x_1,\dots,x_n$ | input values (features) of one example | $x_1=1,\ x_2=0$ |
 | $x_0$ | **bias input**, always equal to $1$ | $1$ |
 | $\vec x=(x_0,\dots,x_n)$ | the full input vector | $(1,1,0)$ |
 | $w_i$ | **weight** of input $i$: how strongly it pushes towards YES (+) or NO (−) | $w_1=0.4$ |
@@ -48,15 +48,15 @@ A perceptron **adds up its inputs, each multiplied by a weight, and answers YES 
 
 **Step 1, add up the evidence:**
 
-$$net=\sum_{i=0}^{n}w_i\,x_i=w_0+w_1x_1+\dots+w_nx_n=\vec w\cdot\vec x$$
+$$net=\sum_{i=0}^{n}w_i\ x_i=w_0+w_1x_1+\dots+w_nx_n=\vec w\cdot\vec x$$
 
 **Step 2, make a hard decision (the threshold / step function):**
 
-$$o=\begin{cases}+1 & \text{if } net>0\\ -1 & \text{otherwise}\end{cases}$$
+$$o=\begin{cases}+1 & \text{if } net>0\cr  -1 & \text{otherwise}\end{cases}$$
 
 ### 🏏 Worked example: "Should I go to the cricket match?"
 
-Inputs: weekend? $x_1$, friend coming? $x_2$, raining? $x_3$ (each 0 or 1). Weights $w_1=+2,\;w_2=+1,\;w_3=-3$ and bias $w_0=-1.5$ ("by default I'm lazy").
+Inputs: weekend? $x_1$, friend coming? $x_2$, raining? $x_3$ (each 0 or 1). Weights $w_1=+2,\ w_2=+1,\ w_3=-3$ and bias $w_0=-1.5$ ("by default I'm lazy").
 
 | Situation | $\vec x=(x_0,x_1,x_2,x_3)$ | $net=\vec w\cdot\vec x$ | $o$ |
 |---|---|---|---|
@@ -91,7 +91,7 @@ This is a **straight line**. In $n$ dimensions it is a flat sheet called a **hyp
 
 For every training example, compare the output $o$ with the target $t$ and correct each weight:
 
-$$\boxed{\;w_i\leftarrow w_i+\Delta w_i,\qquad \Delta w_i=\eta\,(t-o)\,x_i\;}$$
+$$\boxed{\ w_i\leftarrow w_i+\Delta w_i,\qquad \Delta w_i=\eta\ (t-o)\ x_i\ }$$
 
 | $t$ | $o$ | $t-o$ | Effect on $w_i$ | Intuition |
 |---|---|---|---|---|
@@ -104,7 +104,7 @@ $$\boxed{\;w_i\leftarrow w_i+\Delta w_i,\qquad \Delta w_i=\eta\,(t-o)\,x_i\;}$$
 
 **Why it moves in the right direction.** After a "should be YES" update the new net input on the same example is
 
-$$net_{new}=\sum_i(w_i+2\eta x_i)\,x_i=net_{old}+2\eta\sum_i x_i^2\;>\;net_{old}.$$
+$$net_{new}=\sum_i(w_i+2\eta x_i)\ x_i=net_{old}+2\eta\sum_i x_i^2\ >\ net_{old}.$$
 
 So the example is pushed towards the correct side every time.
 
@@ -112,7 +112,7 @@ So the example is pushed towards the correct side every time.
 
 ## 6. Worked example: learning AND (exact numbers from the notebook)
 
-Targets: $(0,0)\to-1,\;(0,1)\to-1,\;(1,0)\to-1,\;(1,1)\to+1$. Start at $\vec w=(0,0,0)$, $\eta=0.1$. The first two epochs, every single update:
+Targets: $(0,0)\to-1,\ (0,1)\to-1,\ (1,0)\to-1,\ (1,1)\to+1$. Start at $\vec w=(0,0,0)$, $\eta=0.1$. The first two epochs, every single update:
 
 ```text
 ep1 x=[0. 0.] t=-1 net=+0.00 o=-1 Δw=[0. 0. 0.] → w=[0. 0. 0.]

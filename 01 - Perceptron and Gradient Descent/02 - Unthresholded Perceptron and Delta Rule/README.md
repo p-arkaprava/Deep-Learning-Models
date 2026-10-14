@@ -28,10 +28,10 @@ Now an output of 5.7 against a target of 6 tells us "0.3 too low", and calculus 
 | Symbol | Meaning | Example (notes' data) |
 |---|---|---|
 | $D$ | training set; $d$ is one example in it | 3 examples |
-| $\vec x_d$ | input vector of example $d$ (with $x_{0,d}=1$) | $(1,\,2)$ |
+| $\vec x_d$ | input vector of example $d$ (with $x_{0,d}=1$) | $(1,\ 2)$ |
 | $x_{i,d}$ | input $i$ of example $d$ | $x_{1,3}=3$ |
 | $t_d$ | **target**: the true value from the dataset | $10$ |
-| $\vec w$ | weights $(w_0,\dots,w_n)$ | $(-2,\,4)$ |
+| $\vec w$ | weights $(w_0,\dots,w_n)$ | $(-2,\ 4)$ |
 | $o_d=\vec w\cdot\vec x_d$ | **output** for example $d$ | $10$ |
 | $t_d-o_d$ | signed **error** on example $d$ | $0$ |
 | $E(\vec w)$ | **cost**: total error as one number | $0$ |
@@ -48,7 +48,7 @@ $$\boxed{E(\vec w)=\frac12\sum_{d\in D}(t_d-o_d)^2}$$
 - **½:** cancels the 2 that appears when we differentiate.
 - The data are fixed, so **$E$ depends only on $\vec w$**. Learning = finding the lowest point of $E$.
 
-**Example from the notes:** $x=1,2,3\to y=2,6,10$. The thresholded perceptron "won't work" here (it only outputs ±1), but a linear unit can fit it exactly with $w_0=-2,\;w_1=4$ ($y=4x-2$).
+**Example from the notes:** $x=1,2,3\to y=2,6,10$. The thresholded perceptron "won't work" here (it only outputs ±1), but a linear unit can fit it exactly with $w_0=-2,\ w_1=4$ ($y=4x-2$).
 
 | $\vec w$ | outputs $o$ | $E$ |
 |---|---|---|
@@ -70,25 +70,17 @@ The contours are long thin ellipses: steep in one direction, almost flat in the 
 
 $$\nabla E(\vec w)=\left[\frac{\partial E}{\partial w_0},\frac{\partial E}{\partial w_1},\dots,\frac{\partial E}{\partial w_n}\right]$$
 
-It points **uphill**, so we step the other way: $\;\vec w\leftarrow\vec w-\eta\,\nabla E$.
+It points **uphill**, so we step the other way: $\ \vec w\leftarrow\vec w-\eta\ \nabla E$.
 
 ### Derivation, one step at a time
 
-$$
-\begin{aligned}
-\frac{\partial E}{\partial w_i}
-&=\frac{\partial}{\partial w_i}\frac12\sum_d(t_d-o_d)^2
-=\frac12\sum_d 2(t_d-o_d)\frac{\partial(t_d-o_d)}{\partial w_i} &&\text{chain rule}\\
-&=\sum_d(t_d-o_d)\,\frac{\partial}{\partial w_i}\big(t_d-\vec w\cdot\vec x_d\big)
-=\sum_d(t_d-o_d)(-x_{i,d}) &&t_d\text{ is a constant}
-\end{aligned}
-$$
+$$\begin{aligned} \frac{\partial E}{\partial w_i} &=\frac{\partial}{\partial w_i}\frac12\sum_d(t_d-o_d)^2 =\frac12\sum_d 2(t_d-o_d)\frac{\partial(t_d-o_d)}{\partial w_i} &&\text{chain rule}\cr &=\sum_d(t_d-o_d)\ \frac{\partial}{\partial w_i}\big(t_d-\vec w\cdot\vec x_d\big) =\sum_d(t_d-o_d)(-x_{i,d}) &&t_d\text{ is a constant} \end{aligned}$$
 
-$$\boxed{\frac{\partial E}{\partial w_i}=-\sum_{d\in D}(t_d-o_d)\,x_{i,d}}\qquad\Longrightarrow\qquad\boxed{\Delta w_i=\eta\sum_{d\in D}(t_d-o_d)\,x_{i,d}}$$
+$$\boxed{\frac{\partial E}{\partial w_i}=-\sum_{d\in D}(t_d-o_d)\ x_{i,d}}\qquad\Longrightarrow\qquad\boxed{\Delta w_i=\eta\sum_{d\in D}(t_d-o_d)\ x_{i,d}}$$
 
 This is the **delta rule** (LMS / Widrow–Hoff rule). It looks like the perceptron rule, but $o$ is now a real number, so $(t-o)$ says **how much** we are wrong. In matrix form (rows of $X$ = examples): $\nabla E=-X^\top(\vec t-\vec o)$.
 
-The notebook checks this formula against a brute-force slope $\frac{E(w_i+\varepsilon)-E(w_i-\varepsilon)}{2\varepsilon}$; both give $\nabla E=(-7.5,\,-20)$ at $\vec w=(0.5,1.5)$.
+The notebook checks this formula against a brute-force slope $\frac{E(w_i+\varepsilon)-E(w_i-\varepsilon)}{2\varepsilon}$; both give $\nabla E=(-7.5,\ -20)$ at $\vec w=(0.5,1.5)$.
 
 ### Worked example: the first three steps by hand ($\eta=0.02$)
 
@@ -99,7 +91,7 @@ step 2: o = [1.24 2.12 3.  ], t - o = [0.76 3.88 7.  ], ∇E = [-11.64 -29.52], 
 step 3: o = [2.0632 3.5336 5.004 ], t - o = [-0.0632  2.4664  4.996 ], ∇E = [ -7.3992 -19.8576], new w = [0.7408 1.8676], E = 8.032
 ```
 
-Step 1 by hand: errors $=(2,6,10)$, so $\partial E/\partial w_0=-(2+6+10)=-18$ and $\partial E/\partial w_1=-(2\cdot1+6\cdot2+10\cdot3)=-44$. Then $\Delta\vec w=-0.02\times(-18,-44)=(0.36,\,0.88)$. ✅
+Step 1 by hand: errors $=(2,6,10)$, so $\partial E/\partial w_0=-(2+6+10)=-18$ and $\partial E/\partial w_1=-(2\cdot1+6\cdot2+10\cdot3)=-44$. Then $\Delta\vec w=-0.02\times(-18,-44)=(0.36,\ 0.88)$. ✅
 
 ---
 

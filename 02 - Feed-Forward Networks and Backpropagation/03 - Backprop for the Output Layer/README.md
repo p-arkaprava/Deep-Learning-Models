@@ -1,13 +1,13 @@
 # 03 · Backprop for the Output Layer
 
 > **Module:** [02 - Feed-Forward Networks and Backpropagation](../) · **Notebook:** [`03_backprop_output_layer.ipynb`](03_backprop_output_layer.ipynb)
-> **Course notes:** page 4 (chain rule, $\delta_j=-\partial E/\partial net_j$, $\Delta w_{ji}=\eta\,\delta_j\,x_{ji}$), page 8 ($\partial E/\partial W^o=\delta^o(o^{h2})^\top$), pages 11–12 (softmax and $E=-\log y_o$) · **Further reading:** Sections 3–4 of [FFNN_Backpropagation_Guide Simplified.pdf](../FFNN_Backpropagation_Guide%20Simplified.pdf), Mitchell §4.5.3
+> **Course notes:** page 4 (chain rule, $\delta_j=-\partial E/\partial net_j$, $\Delta w_{ji}=\eta\ \delta_j\ x_{ji}$), page 8 ($\partial E/\partial W^o=\delta^o(o^{h2})^\top$), pages 11–12 (softmax and $E=-\log y_o$) · **Further reading:** Sections 3–4 of [FFNN_Backpropagation_Guide Simplified.pdf](../FFNN_Backpropagation_Guide%20Simplified.pdf), Mitchell §4.5.3
 
 ---
 
 ## 📌 The core idea in one sentence
 
-For an output weight $w_{kj}$, the chain rule splits $\partial E/\partial w_{kj}$ into *(how wrong the output is) × (how sensitive the neuron is) × (what came in on the wire)*; the first two factors form the **error term** $\delta_k$, and the update is simply $\Delta w_{kj}=\eta\,\delta_k\,x_{kj}$.
+For an output weight $w_{kj}$, the chain rule splits $\partial E/\partial w_{kj}$ into *(how wrong the output is) × (how sensitive the neuron is) × (what came in on the wire)*; the first two factors form the **error term** $\delta_k$, and the update is simply $\Delta w_{kj}=\eta\ \delta_k\ x_{kj}$.
 
 ![chain](../figures/c2_backprop_chain.png)
 
@@ -51,7 +51,7 @@ $$\frac{\partial E}{\partial w_{kj}}=\underbrace{\frac{\partial E}{\partial o_k}
 | ② | sigmoid derivative | $o_k(1-o_k)$ | how sensitive the neuron is |
 | ③ | $net_k=\sum_jw_{kj}o_j+b_k$ | $o_j=x_{kj}$ | the signal on that wire |
 
-$$\boxed{\delta_k=(t_k-o_k)\,o_k(1-o_k)}\qquad\boxed{\Delta w_{kj}=-\eta\frac{\partial E}{\partial w_{kj}}=\eta\,\delta_k\,x_{kj}}\qquad\Delta b_k=\eta\,\delta_k$$
+$$\boxed{\delta_k=(t_k-o_k)\ o_k(1-o_k)}\qquad\boxed{\Delta w_{kj}=-\eta\frac{\partial E}{\partial w_{kj}}=\eta\ \delta_k\ x_{kj}}\qquad\Delta b_k=\eta\ \delta_k$$
 
 **Read it as:** weight change = learning rate × blame at the neuron × signal on the wire. Everything is **local** (notes: *"for back prop you need only local information"*). Changing the activation function only changes factor ② (notes: *"activation function changes, only this partial derivative changes"*).
 
@@ -99,7 +99,7 @@ With $K$ outputs, $n_h$ hidden neurons and $N$ examples (one per column):
 | Quantity | Formula | Shape |
 |---|---|---|
 | error terms | $\delta^o=(T-O^o)\odot O^o\odot(1-O^o)$ | $K\times N$ |
-| weight gradient | $\dfrac{\partial E}{\partial W^o}=-\,\delta^o\,(O^h)^\top$ | $K\times n_h$ (same as $W^o$) |
+| weight gradient | $\dfrac{\partial E}{\partial W^o}=-\ \delta^o\ (O^h)^\top$ | $K\times n_h$ (same as $W^o$) |
 | bias gradient | $\dfrac{\partial E}{\partial b^o}=-\sum_{\text{cols}}\delta^o$ | $K\times1$ |
 | blame for the hidden layer | $\dfrac{\partial E}{\partial O^h}=-(W^o)^\top\delta^o$ | $n_h\times N$ |
 
@@ -166,7 +166,7 @@ With squared error the factor $o(1-o)$ kills the signal when the neuron is confi
 | 2. Weight gradient | `dW = -delta @ O_prev.T` | $-\delta^o(O^h)^\top$ |
 | 3. Bias gradient | `db = -delta.sum(axis=1, keepdims=True)` | $-\sum_n\delta_{kn}$ |
 | 4. Blame for the layer below | `dO_prev = -W.T @ delta` | $-(W^o)^\top\delta^o$ |
-| 5. Update | `W -= eta * dW` (same as `W += eta * delta @ O_prev.T`) | $\Delta W=\eta\,\delta^o(O^h)^\top$ |
+| 5. Update | `W -= eta * dW` (same as `W += eta * delta @ O_prev.T`) | $\Delta W=\eta\ \delta^o(O^h)^\top$ |
 | 6. Check | `numerical_grad(f, W)` then `rel_err` | central differences |
 
 `numerical_grad` nudges each entry by $\pm\varepsilon$, re-evaluates the loss, and **restores** the entry. Forgetting to restore is a classic bug.

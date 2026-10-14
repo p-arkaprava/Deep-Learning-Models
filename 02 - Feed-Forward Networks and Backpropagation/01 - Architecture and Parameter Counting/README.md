@@ -16,12 +16,12 @@ In a fully connected layer **every neuron has one weight per incoming wire plus 
 | Symbol | Meaning | Example (4-5-3-2) |
 |---|---|---|
 | $L$ | number of layers that have weights (hidden + output) | $3$ |
-| $n_l$ | neurons in layer $l$; $n_0$ = number of inputs | $n_0=4,\;n_1=5,\;n_2=3,\;n_3=2$ |
+| $n_l$ | neurons in layer $l$; $n_0$ = number of inputs | $n_0=4,\ n_1=5,\ n_2=3,\ n_3=2$ |
 | $w_{ji}$ | weight on the wire **from** neuron $i$ **to** neuron $j$ | – |
 | $W^{[l]}$ | all weights of layer $l$, shape $n_l\times n_{l-1}$; **row $j$** = neuron $j$'s incoming weights | $W^{h1}$ is $5\times4$ |
 | $b^{[l]}$ | biases of layer $l$, shape $n_l\times1$ | $b^{h1}$ is $5\times1$ |
 
-These match the notes, which write $W^{h1}_{5\times4},\;W^{h2}_{3\times5},\;W^{o}_{2\times3}$.
+These match the notes, which write $W^{h1}_{5\times4},\ W^{h2}_{3\times5},\ W^{o}_{2\times3}$.
 
 ---
 
@@ -38,7 +38,7 @@ These match the notes, which write $W^{h1}_{5\times4},\;W^{h2}_{3\times5},\;W^{o
 
 ## 3. The counting formula
 
-$$\boxed{\#\text{params}_l=\underbrace{n_{l-1}\,n_l}_{\text{weights}}+\underbrace{n_l}_{\text{biases}}=n_l\,(n_{l-1}+1)}\qquad\qquad\#\text{params}=\sum_{l=1}^{L}n_l\,(n_{l-1}+1)$$
+$$\boxed{\text{params}_l=\underbrace{n_{l-1}\ n_l}_{\text{weights}}+\underbrace{n_l}_{\text{biases}}=n_l\ (n_{l-1}+1)}\qquad\qquad\text{params}=\sum_{l=1}^{L}n_l\ (n_{l-1}+1)$$
 
 **Intuition:** each neuron owns $n_{l-1}+1$ numbers: one per incoming wire, plus its bias.
 
@@ -128,7 +128,7 @@ For `[784,128,64,10]`: 218,368 FLOPs and 202 stored activations per example (×2
 | Step | Code | Maths |
 |---|---|---|
 | 1. Loop over layers $l=1..L$ | `for l in range(1, len(sizes))` | – |
-| 2. Inputs and outputs of the layer | `n_in, n_out = sizes[l-1], sizes[l]` | $n_{l-1},\;n_l$ |
+| 2. Inputs and outputs of the layer | `n_in, n_out = sizes[l-1], sizes[l]` | $n_{l-1},\ n_l$ |
 | 3. Weights | `w = n_out * n_in` | $n_ln_{l-1}$ entries of $W^{[l]}$ |
 | 4. Biases | `b = n_out` | $n_l$ entries of $b^{[l]}$ |
 | 5. Allocate to check | `rng.normal(0, 0.1, (sizes[l], sizes[l-1]))` | $W^{[l]}\in\mathbb R^{n_l\times n_{l-1}}$ |
@@ -203,7 +203,7 @@ jupyter notebook 01_architecture_and_parameter_counting.ipynb
 ## ✍️ Exercises
 1. Count `[3072, 512, 256, 100]` by hand, then check with `show`.
 2. Remove all biases. What fraction of the MNIST network disappears? *(202 of 109,386: 0.18%.)*
-3. The word2vec model in the notes has $V_{d\times n}$ and $U_{n\times d}$ and no biases. Show it has $2dn$ parameters; evaluate for $d=300,\;n=10^5$.
+3. The word2vec model in the notes has $V_{d\times n}$ and $U_{n\times d}$ and no biases. Show it has $2dn$ parameters; evaluate for $d=300,\ n=10^5$.
 4. Add batch norm (2 parameters per hidden neuron) to `[784,128,64,10]`. How many extra parameters?
 
 **Next:** [02 - Matrix-Form Forward Pass](../02%20-%20Matrix-Form%20Forward%20Pass/)

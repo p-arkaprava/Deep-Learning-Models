@@ -1,7 +1,7 @@
 # 02 · Matrix-Form Forward Pass
 
 > **Module:** [02 - Feed-Forward Networks and Backpropagation](../) · **Notebook:** [`02_matrix_form_forward_pass.ipynb`](02_matrix_form_forward_pass.ipynb)
-> **Course notes:** page 8, $o^{h1}=\sigma(W^{h1}x+b^{h1}),\;o^{h2}=\sigma(W^{h2}o^{h1}+b^{h2}),\;o^{o}=\sigma(W^{o}o^{h2}+b^{o})$ · **Further reading:** Section 2 of [FFNN_Backpropagation_Guide Simplified.pdf](../FFNN_Backpropagation_Guide%20Simplified.pdf)
+> **Course notes:** page 8, $o^{h1}=\sigma(W^{h1}x+b^{h1}),\ o^{h2}=\sigma(W^{h2}o^{h1}+b^{h2}),\ o^{o}=\sigma(W^{o}o^{h2}+b^{o})$ · **Further reading:** Section 2 of [FFNN_Backpropagation_Guide Simplified.pdf](../FFNN_Backpropagation_Guide%20Simplified.pdf)
 
 ---
 
@@ -24,13 +24,13 @@ A neuron is a dot product; a **layer** is a matrix-vector product $net^{[l]}=W^{
 | $g$ | – | activation function (sigmoid in the notes) |
 | $o^{[l]}=g(net^{[l]})$ | $n_l\times1$ | outputs of layer $l$ |
 | $N$ | – | batch size; $X$ and $O^{[l]}$ have **one example per column** |
-| $z_k,\;p_k,\;K$ | – | output score, softmax probability, number of classes |
+| $z_k,\ p_k,\ K$ | – | output score, softmax probability, number of classes |
 
 ---
 
 ## 2. One neuron = one dot product
 
-$$net_j=\sum_{i=1}^{n_{l-1}}w_{ji}\,o_i+b_j,\qquad o_j=g(net_j)$$
+$$net_j=\sum_{i=1}^{n_{l-1}}w_{ji}\ o_i+b_j,\qquad o_j=g(net_j)$$
 
 `w_j @ o_prev + b_j` gives the same number as the explicit loop.
 
@@ -38,7 +38,7 @@ $$net_j=\sum_{i=1}^{n_{l-1}}w_{ji}\,o_i+b_j,\qquad o_j=g(net_j)$$
 
 Stack the weight rows of all neurons into $W^{[l]}$:
 
-$$\boxed{net^{[l]}=W^{[l]}\,o^{[l-1]}+b^{[l]},\qquad o^{[l]}=g\big(net^{[l]}\big)}$$
+$$\boxed{net^{[l]}=W^{[l]}\ o^{[l-1]}+b^{[l]},\qquad o^{[l]}=g\big(net^{[l]}\big)}$$
 
 **Shape rule:** $(n_l\times n_{l-1})(n_{l-1}\times1)=(n_l\times1)$. Inner sizes must match; outer sizes give the result.
 
@@ -83,9 +83,9 @@ Column $n$ is exactly the single-example result for example $n$. The bias is **b
 **Why bother?** Three nested Python loops (examples × neurons × inputs) become one call to optimised BLAS code. Measured in the notebook:
 
 ```text
-W 32×64, batch  16:  loops      5.04 ms | matrix  0.0033 ms | ≈ 1,540× faster
-W 64×256, batch  32:  loops     82.16 ms | matrix  0.0183 ms | ≈ 4,487× faster
-W 128×512, batch  64:  loops   1120.20 ms | matrix  0.1703 ms | ≈ 6,578× faster
+W 32×64, batch  16:  loops      8.48 ms | matrix  0.0054 ms | ≈ 1,556× faster
+W 64×256, batch  32:  loops    129.10 ms | matrix  0.0257 ms | ≈ 5,030× faster
+W 128×512, batch  64:  loops    728.94 ms | matrix  0.1083 ms | ≈ 6,730× faster
 ```
 
 (Exact times depend on your machine; the speed-up is always in the thousands.)
@@ -126,13 +126,13 @@ The `cache` stores every $(net^{[l]},o^{[l]})$. Backprop needs $o^{[l-1]}$ (for 
 
 ## 8. Worked 2-2-1 example (pen and paper)
 
-$x=\begin{bmatrix}1\\0.5\end{bmatrix}$, $W^{[1]}=\begin{bmatrix}0.2&0.4\\-0.3&0.1\end{bmatrix}$, $b^{[1]}=\begin{bmatrix}0.1\\-0.1\end{bmatrix}$, $W^{[2]}=\begin{bmatrix}0.6&-0.2\end{bmatrix}$, $b^{[2]}=0.05$, sigmoid everywhere.
+$x=\begin{bmatrix}1\cr 0.5\end{bmatrix}$, $W^{[1]}=\begin{bmatrix}0.2&0.4\cr -0.3&0.1\end{bmatrix}$, $b^{[1]}=\begin{bmatrix}0.1\cr -0.1\end{bmatrix}$, $W^{[2]}=\begin{bmatrix}0.6&-0.2\end{bmatrix}$, $b^{[2]}=0.05$, sigmoid everywhere.
 
 | Step | Computation | Value |
 |---|---|---|
 | $net^{[1]}_1$ | $0.2\cdot1+0.4\cdot0.5+0.1$ | $0.5$ |
 | $net^{[1]}_2$ | $-0.3\cdot1+0.1\cdot0.5-0.1$ | $-0.35$ |
-| $o^{[1]}$ | $\sigma(0.5),\;\sigma(-0.35)$ | $0.6225,\;0.4134$ |
+| $o^{[1]}$ | $\sigma(0.5),\ \sigma(-0.35)$ | $0.6225,\ 0.4134$ |
 | $net^{[2]}$ | $0.6\cdot0.6225-0.2\cdot0.4134+0.05$ | $0.3408$ |
 | $o^{[2]}$ | $\sigma(0.3408)$ | $\mathbf{0.5844}$ |
 

@@ -21,10 +21,10 @@ Stacking **linear** neurons gains nothing (the layers collapse into one), and th
 | $\sigma(\cdot)$ | the sigmoid (logistic) function | – |
 | $o=\sigma(net)$ | output of a sigmoid unit, in $(0,1)$ | $0.953$ |
 | $y$ | the notes' name for $\sigma$'s output | – |
-| $t_d,\;o_d$ | target and output for example $d$ | $1,\;0.953$ |
+| $t_d,\ o_d$ | target and output for example $d$ | $1,\ 0.953$ |
 | $E=\tfrac12\sum_d(t_d-o_d)^2$ | squared-error cost | – |
 | $\delta_d$ | **error term** of the unit for example $d$ | – |
-| $W_1,W_2$ | weight matrices of two stacked layers (one row per neuron) | $4\times3,\;2\times4$ |
+| $W_1,W_2$ | weight matrices of two stacked layers (one row per neuron) | $4\times3,\ 2\times4$ |
 
 ---
 
@@ -32,7 +32,7 @@ Stacking **linear** neurons gains nothing (the layers collapse into one), and th
 
 Layer 1 computes $\vec h=W_1\vec x$, layer 2 computes $\vec o=W_2\vec h$. Substitute:
 
-$$\vec o=W_2(W_1\vec x)=(W_2W_1)\,\vec x=W_3\,\vec x$$
+$$\vec o=W_2(W_1\vec x)=(W_2W_1)\ \vec x=W_3\ \vec x$$
 
 A product of matrices is just another matrix, so **two linear layers = one linear layer** (doubling then tripling = multiplying by 6). Ten linear layers still draw one straight line.
 
@@ -72,11 +72,7 @@ $$\boxed{\sigma(x)=\frac{1}{1+e^{-x}}}$$
 
 Let $y=\sigma(x)=(1+e^{-x})^{-1}$.
 
-$$
-\frac{dy}{dx}=-(1+e^{-x})^{-2}\cdot(-e^{-x})=\frac{e^{-x}}{(1+e^{-x})^2}
-=\underbrace{\frac{1}{1+e^{-x}}}_{y}\cdot\underbrace{\frac{e^{-x}}{1+e^{-x}}}_{1-y}
-\quad\Longrightarrow\quad\boxed{\sigma'(x)=y\,(1-y)}
-$$
+$$\frac{dy}{dx}=-(1+e^{-x})^{-2}\cdot(-e^{-x})=\frac{e^{-x}}{(1+e^{-x})^2} =\underbrace{\frac{1}{1+e^{-x}}}_{y}\cdot\underbrace{\frac{e^{-x}}{1+e^{-x}}}_{1-y} \quad\Longrightarrow\quad\boxed{\sigma'(x)=y\ (1-y)}$$
 
 Once the forward pass has $y$, the slope costs **one multiplication**. The notebook checks it against a numerical slope (max difference $1.4\times10^{-11}$).
 
@@ -91,11 +87,9 @@ Once the forward pass has $y$, the slope costs **one multiplication**. The noteb
 
 Output $o_d=\sigma(net_d)$, $net_d=\vec w\cdot\vec x_d$, cost $E=\frac12\sum_d(t_d-o_d)^2$. The chain rule now has three links:
 
-$$
-\frac{\partial E}{\partial w_i}=\sum_d\underbrace{\frac{\partial E}{\partial o_d}}_{-(t_d-o_d)}\cdot\underbrace{\frac{\partial o_d}{\partial net_d}}_{o_d(1-o_d)}\cdot\underbrace{\frac{\partial net_d}{\partial w_i}}_{x_{i,d}}
-$$
+$$\frac{\partial E}{\partial w_i}=\sum_d\underbrace{\frac{\partial E}{\partial o_d}}_{-(t_d-o_d)}\cdot\underbrace{\frac{\partial o_d}{\partial net_d}}_{o_d(1-o_d)}\cdot\underbrace{\frac{\partial net_d}{\partial w_i}}_{x_{i,d}}$$
 
-$$\boxed{\delta_d=(t_d-o_d)\,o_d(1-o_d)}\qquad\boxed{\Delta w_i=\eta\sum_d\delta_d\,x_{i,d}}$$
+$$\boxed{\delta_d=(t_d-o_d)\ o_d(1-o_d)}\qquad\boxed{\Delta w_i=\eta\sum_d\delta_d\ x_{i,d}}$$
 
 The only change from the delta rule is the extra factor $o_d(1-o_d)$. The notes: *"activation function changes, only this partial derivative changes."* The error term $\delta$ is the building block of backpropagation in module 02.
 

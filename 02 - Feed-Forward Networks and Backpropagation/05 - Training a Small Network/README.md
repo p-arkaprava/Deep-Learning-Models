@@ -32,11 +32,11 @@ Training is a five-step loop (**shuffle → forward → loss → backward → up
 
 **Plain mini-batch SGD:**
 
-$$\theta\leftarrow\theta-\eta\,g\qquad\Longleftrightarrow\qquad\Delta W^{[l]}=\eta\,\delta^{[l]}(o^{[l-1]})^\top$$
+$$\theta\leftarrow\theta-\eta\ g\qquad\Longleftrightarrow\qquad\Delta W^{[l]}=\eta\ \delta^{[l]}(o^{[l-1]})^\top$$
 
 **With momentum:**
 
-$$v\leftarrow\mu\,v-\eta\,g,\qquad\theta\leftarrow\theta+v$$
+$$v\leftarrow\mu\ v-\eta\ g,\qquad\theta\leftarrow\theta+v$$
 
 **Intuition: a ball rolling downhill.** Gradients that keep pointing the same way add up and speed the ball along a valley; gradients that flip sign (the zig-zag across a narrow valley seen in module 01) cancel. With $\mu=0$ this is plain SGD.
 
@@ -106,7 +106,7 @@ After epoch 1 the regions are nearly straight wedges; by epoch 150 they follow e
 | 3. Output delta | `(T - O) / N` or `(T - O) * O * (1 - O) / N` | $\delta^{[L]}$ for softmax-CE / sigmoid-MSE |
 | 4. Hidden deltas | `gprime(net, o) * (W.T @ delta)` | $\delta^{[l]}=g'\odot(W^{[l+1]})^\top\delta^{[l+1]}$ |
 | 4. Gradients | `-delta @ self.o[l].T` | $\partial E/\partial W^{[l]}=-\delta^{[l]}(o^{[l-1]})^\top$ |
-| 5. Momentum update | `v = momentum * v - lr * g;  W += v` | $v\leftarrow\mu v-\eta g,\;\theta\leftarrow\theta+v$ |
+| 5. Momentum update | `v = momentum * v - lr * g;  W += v` | $v\leftarrow\mu v-\eta g,\ \theta\leftarrow\theta+v$ |
 
 Initial weights: $\mathcal N(0,2/n_{l-1})$ for ReLU (He), $\mathcal N(0,1/n_{l-1})$ otherwise (Xavier), so signals neither explode nor vanish at the start.
 

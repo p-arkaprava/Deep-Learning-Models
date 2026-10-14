@@ -59,7 +59,7 @@ Read this table once; every formula below uses only these symbols.
 
 ![neuron](figures/p1_neuron.png)
 
-$$net=\sum_{i=0}^{n} w_i x_i ,\qquad o=\begin{cases}+1 & net>0\\ -1 & \text{otherwise}\end{cases},\qquad \Delta w_i=\eta\,(t-o)\,x_i$$
+$$net=\sum_{i=0}^{n} w_i x_i ,\qquad o=\begin{cases}+1 & net>0\cr  -1 & \text{otherwise}\end{cases},\qquad \Delta w_i=\eta\ (t-o)\ x_i$$
 
 The perceptron draws **one straight line** (a hyperplane) and says YES on one side. The rule only changes weights after a mistake, and only for inputs that were switched on. It learns AND, OR and NAND, but **can never learn XOR**: the four XOR conditions add up to a contradiction.
 
@@ -69,7 +69,7 @@ The perceptron draws **one straight line** (a hyperplane) and says YES on one si
 
 Remove the step: $o=\vec w\cdot\vec x$. Now we can measure *how wrong* we are and roll downhill on a smooth error bowl:
 
-$$E(\vec w)=\tfrac12\sum_{d\in D}(t_d-o_d)^2,\qquad \frac{\partial E}{\partial w_i}=-\sum_d(t_d-o_d)\,x_{i,d},\qquad \Delta w_i=\eta\sum_d (t_d-o_d)\,x_{i,d}$$
+$$E(\vec w)=\tfrac12\sum_{d\in D}(t_d-o_d)^2,\qquad \frac{\partial E}{\partial w_i}=-\sum_d(t_d-o_d)\ x_{i,d},\qquad \Delta w_i=\eta\sum_d (t_d-o_d)\ x_{i,d}$$
 
 Worked on the notes' own data ($x=1,2,3\to y=2,6,10$), gradient descent finds $o=-2+4x$:
 
@@ -79,7 +79,7 @@ Worked on the notes' own data ($x=1,2,3\to y=2,6,10$), gradient descent finds $o
 
 Stacked linear layers **collapse into one** ($W_2W_1\vec x=W_3\vec x$). The sigmoid is a smooth, differentiable version of the step that prevents this collapse:
 
-$$\sigma(x)=\frac{1}{1+e^{-x}},\qquad \sigma'(x)=y\,(1-y),\qquad \Delta w_i=\eta\sum_d\underbrace{(t_d-o_d)\,o_d(1-o_d)}_{\delta_d}\,x_{i,d}$$
+$$\sigma(x)=\frac{1}{1+e^{-x}},\qquad \sigma'(x)=y\ (1-y),\qquad \Delta w_i=\eta\sum_d\underbrace{(t_d-o_d)\ o_d(1-o_d)}_{\delta_d}\ x_{i,d}$$
 
 ![sigmoid](figures/c1_sigmoid_and_derivative.png)
 
@@ -93,9 +93,9 @@ With one hidden layer of sigmoids, XOR becomes easy: the hidden layer re-maps th
 
 | | Thresholded perceptron | Linear unit (Delta rule) | Sigmoid unit |
 |---|---|---|---|
-| Output | $\text{step}(\vec w\cdot\vec x)\in\{-1,+1\}$ | $\vec w\cdot\vec x$ | $\sigma(\vec w\cdot\vec x)\in(0,1)$ |
+| Output | $\text{step}(\vec w\cdot\vec x)\in\lbrace -1,+1\rbrace $ | $\vec w\cdot\vec x$ | $\sigma(\vec w\cdot\vec x)\in(0,1)$ |
 | Error measured as | right / wrong | $\tfrac12\sum(t-o)^2$ | $\tfrac12\sum(t-o)^2$ |
-| Update $\Delta w_i$ | $\eta(t-o)x_i$ | $\eta\sum_d(t_d-o_d)x_{i,d}$ | $\eta\sum_d(t_d-o_d)\,o_d(1-o_d)\,x_{i,d}$ |
+| Update $\Delta w_i$ | $\eta(t-o)x_i$ | $\eta\sum_d(t_d-o_d)x_{i,d}$ | $\eta\sum_d(t_d-o_d)\ o_d(1-o_d)\ x_{i,d}$ |
 | Differentiable? | ❌ | ✅ | ✅ |
 | Useful when stacked? | can't be trained | ❌ collapses | ✅ non-linear |
 | Converges on non-separable data? | ❌ cycles forever | ✅ (least-squares fit) | ✅ |

@@ -21,8 +21,8 @@ Training must keep **every activation** for backprop plus a gradient and optimis
 | $n_l$ | neurons (activations per example) in layer $l$ | 5 |
 | $K$ | number of GPUs | 8 |
 | $N_k$, $g_k$ | examples given to GPU $k$, and the gradient it computes on them | $N/K$ |
-| $m,\;v$ | Adam's two running averages, one of each per parameter | – |
-| $F_i,\;B_i$ | forward / backward pass of micro-batch $i$ | – |
+| $m,\ v$ | Adam's two running averages, one of each per parameter | – |
+| $F_i,\ B_i$ | forward / backward pass of micro-batch $i$ | – |
 
 ---
 
@@ -52,7 +52,7 @@ training  peak = 65   (= 51 + 4 + 5 + 3 + 2)
 | optimiser state | SGD: none · momentum: $v$ · **Adam: $m$ and $v$** | 0 / 4 / **8** |
 | **total with Adam** | | **16** |
 
-$$\text{memory}\approx16P\;+\;\underbrace{4N\Big(n_0+2\sum_{l\ge1}n_l\Big)}_{\text{activations: }x,\ net^{[l]},\ o^{[l]}}\ \text{bytes}$$
+$$\text{memory}\approx16P\ +\ \underbrace{4N\Big(n_0+2\sum_{l\ge1}n_l\Big)}_{\text{activations: }x,\ net^{[l]},\ o^{[l]}}\ \text{bytes}$$
 
 The parameter part is **fixed**; the activation part **grows with batch size**.
 
@@ -93,7 +93,7 @@ A 7B model's training state alone (112 GB) is larger than any single GPU.
 
 Notes: *"Each GPU collects local updates. Collect all updates together."* Every GPU holds the full model, processes $N_k$ examples, and the gradients are averaged. Because the loss is a **mean** over examples, this is exact:
 
-$$g_{\text{full}}=\frac1N\sum_{n=1}^Ng_n=\sum_{k=1}^K\frac{N_k}{N}\,g_k$$
+$$g_{\text{full}}=\frac1N\sum_{n=1}^Ng_n=\sum_{k=1}^K\frac{N_k}{N}\ g_k$$
 
 ```text
 4 workers × 16 examples each
