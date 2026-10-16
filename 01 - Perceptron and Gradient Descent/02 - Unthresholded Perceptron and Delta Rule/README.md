@@ -189,28 +189,44 @@ class LinearUnit:
     def cost(self, Xb, t):
         return 0.5 * np.sum((t - Xb @ self.w) ** 2)       # E(w) = 1/2 Σ (t_d - o_d)^2
 
-    def fit(self, X, t, w_init=None):
-        Xb = self.add_bias(X)
-        self.w = np.zeros(Xb.shape[1]) if w_init is None else np.array(w_init, float)
-        self.cost_history = [self.cost(Xb, t)]             # E before any training
-        self.w_history = [self.w.copy()]
-        for epoch in range(self.epochs):
-            if self.mode == "batch":
-                o = Xb @ self.w                            # outputs for ALL examples
-                grad = -Xb.T @ (t - o)                     # ∂E/∂w_i = -Σ_d (t_d - o_d) x_id
-                self.w = self.w - self.eta * grad          # one step downhill
-                self.w_history.append(self.w.copy())
-            else:  # stochastic: one small step per example, in random order
-                for d in self.rng.permutation(len(t)):
-                    o_d = Xb[d] @ self.w                   # output for example d only
-                    self.w = self.w + self.eta * (t[d] - o_d) * Xb[d]   # Δw = η (t_d - o_d) x_d
-                    self.w_history.append(self.w.copy())
-            self.cost_history.append(self.cost(Xb, t))     # E after this epoch
-        self.w_history = np.array(self.w_history)
-        return self
+def batch_step(self, Xb, t):
+    """Delta rule, batch version: ONE update using the gradient summed over all examples."""
+    o = Xb @ self.w                            # outputs for ALL examples
+    grad = -Xb.T @ (t - o)                     # ∂E/∂w_i = -Σ_d (t_d - o_d) x_id
+    self.w = self.w - self.eta * grad          # one step downhill
+    self.w_history.append(self.w.copy())
 
-    def predict(self, X):
-        return self.add_bias(X) @ self.w
+LinearUnit.batch_step = batch_step
+
+def stochastic_epoch(self, Xb, t):
+    """Delta rule, incremental version: one small update per example, in random order."""
+    for d in self.rng.permutation(len(t)):
+        o_d = Xb[d] @ self.w                                   # output for example d only
+        self.w = self.w + self.eta * (t[d] - o_d) * Xb[d]      # Δw = η (t_d - o_d) x_d
+        self.w_history.append(self.w.copy())
+
+LinearUnit.stochastic_epoch = stochastic_epoch
+
+def fit(self, X, t, w_init=None):
+    Xb = self.add_bias(X)
+    self.w = np.zeros(Xb.shape[1]) if w_init is None else np.array(w_init, float)
+    self.cost_history = [self.cost(Xb, t)]             # E before any training
+    self.w_history = [self.w.copy()]
+    for epoch in range(self.epochs):
+        if self.mode == "batch":
+            self.batch_step(Xb, t)                     # 1 update per epoch
+        else:
+            self.stochastic_epoch(Xb, t)               # N updates per epoch
+        self.cost_history.append(self.cost(Xb, t))     # E after this epoch
+    self.w_history = np.array(self.w_history)
+    return self
+
+LinearUnit.fit = fit
+
+def predict(self, X):
+    return self.add_bias(X) @ self.w
+
+LinearUnit.predict = predict
 
 
 # ---- usage: the data from the notes ----

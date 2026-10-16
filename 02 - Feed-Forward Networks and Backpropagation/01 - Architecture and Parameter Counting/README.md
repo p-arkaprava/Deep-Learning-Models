@@ -153,7 +153,6 @@ def count_params(sizes):
         total += w + b
     return rows, total
 
-
 def show(sizes):
     """Pretty-print the parameter table of a network."""
     rows, total = count_params(sizes)
@@ -168,13 +167,6 @@ def init_params(sizes, rng):
     """Create W^[l] (n_l × n_{l-1}) and b^[l] (n_l × 1) for every layer, small random weights."""
     return [(rng.normal(0, 0.1, (sizes[l], sizes[l - 1])), np.zeros((sizes[l], 1)))
             for l in range(1, len(sizes))]
-
-rng = np.random.default_rng(0)
-for sizes in ([4, 3, 3, 2], [4, 5, 3, 2], [784, 128, 64, 10]):
-    params = init_params(sizes, rng)
-    actual = sum(W.size + b.size for W, b in params)          # .size = number of entries
-    print(f"{str(sizes):<20} formula = {count_params(sizes)[1]:>7,}   arrays = {actual:>7,}   shapes = {[W.shape for W, _ in params]}")
-    assert actual == count_params(sizes)[1]
 
 
 rows, total = show([4, 5, 3, 2])     # 51, as in the notes

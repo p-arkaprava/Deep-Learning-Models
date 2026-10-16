@@ -143,72 +143,92 @@ class MLP:
         self.vb = [np.zeros_like(b) for b in self.b]
         self.hidden, self.output = hidden, output
 
-    def forward(self, X):
-        """X: (n_0 × N). Stores net^[l] and o^[l] for backprop."""
-        g = self.ACT[self.hidden][0]
-        self.net, self.o = [None], [X]
-        L = len(self.W)
-        for l in range(L):
-            NET = self.W[l] @ self.o[-1] + self.b[l]                 # net = W o_prev + b
-            self.net.append(NET)
-            if l < L - 1:
-                self.o.append(g(NET))
-            else:
-                self.o.append(sigmoid(NET) if self.output == "sigmoid_mse" else softmax(NET))
-        return self.o[-1]
+def forward(self, X):
+    """X: (n_0 × N). Stores net^[l] and o^[l] for backprop."""
+    g = self.ACT[self.hidden][0]
+    self.net, self.o = [None], [X]
+    L = len(self.W)
+    for l in range(L):
+        NET = self.W[l] @ self.o[-1] + self.b[l]                 # net = W o_prev + b
+        self.net.append(NET)
+        if l < L - 1:
+            self.o.append(g(NET))
+        else:
+            self.o.append(sigmoid(NET) if self.output == "sigmoid_mse" else softmax(NET))
+    return self.o[-1]
 
-    def loss(self, O, T):
-        if self.output == "sigmoid_mse":
-            return 0.5 * np.sum((T - O) ** 2) / T.shape[1]           # ½ squared error, averaged per example
-        return -np.sum(T * np.log(O + 1e-12)) / T.shape[1]           # mean cross-entropy
+MLP.forward = forward
 
-    def backward(self, T):
-        """Returns gradients ∂E/∂W, ∂E/∂b for the batch (mean over examples)."""
-        gprime = self.ACT[self.hidden][1]
-        N, L = T.shape[1], len(self.W)
-        O = self.o[-1]
-        delta = (T - O) * O * (1 - O) / N if self.output == "sigmoid_mse" else (T - O) / N   # δ^[L]
-        gW, gb = [None] * L, [None] * L
-        for l in reversed(range(L)):
-            gW[l] = -delta @ self.o[l].T                             # ∂E/∂W^[l] = -δ o_prevᵀ
-            gb[l] = -delta.sum(axis=1, keepdims=True)
-            if l > 0:
-                delta = gprime(self.net[l], self.o[l]) * (self.W[l].T @ delta)   # δ^[l-1]
-        return gW, gb
+def loss(self, O, T):
+    if self.output == "sigmoid_mse":
+        return 0.5 * np.sum((T - O) ** 2) / T.shape[1]           # ½ squared error, averaged per example
+    return -np.sum(T * np.log(O + 1e-12)) / T.shape[1]           # mean cross-entropy
 
-    def step(self, gW, gb, lr, momentum=0.0):
-        for l in range(len(self.W)):
-            self.vW[l] = momentum * self.vW[l] - lr * gW[l]          # v ← μ v − η g
-            self.vb[l] = momentum * self.vb[l] - lr * gb[l]
-            self.W[l] += self.vW[l]                                  # θ ← θ + v
-            self.b[l] += self.vb[l]
+MLP.loss = loss
 
-    def predict(self, X):
-        return self.forward(X).argmax(axis=0)
+def backward(self, T):
+    """Returns gradients ∂E/∂W, ∂E/∂b for the batch (mean over examples)."""
+    gprime = self.ACT[self.hidden][1]
+    N, L = T.shape[1], len(self.W)
+    O = self.o[-1]
+    delta = (T - O) * O * (1 - O) / N if self.output == "sigmoid_mse" else (T - O) / N   # δ^[L]
+    gW, gb = [None] * L, [None] * L
+    for l in reversed(range(L)):
+        gW[l] = -delta @ self.o[l].T                             # ∂E/∂W^[l] = -δ o_prevᵀ
+        gb[l] = -delta.sum(axis=1, keepdims=True)
+        if l > 0:
+            delta = gprime(self.net[l], self.o[l]) * (self.W[l].T @ delta)   # δ^[l-1]
+    return gW, gb
 
-    def fit(self, X, T, X_test=None, T_test=None, epochs=100, batch=32, lr=0.1, momentum=0.0,
-            seed=0, snapshot_epochs=(), snapshot_fn=None):
-        r = np.random.default_rng(seed)
-        N = X.shape[1]
-        hist = {k: [] for k in ("loss", "test_loss", "acc", "test_acc")}
-        self.snapshots = {}
-        for ep in range(1, epochs + 1):
-            idx = r.permutation(N)                                   # 1. shuffle every epoch
-            for s in range(0, N, batch):
-                cols = idx[s:s + batch]                              #    take a mini-batch
-                self.forward(X[:, cols])                             # 2. forward
-                gW, gb = self.backward(T[:, cols])                   # 3-4. loss gradient by backprop
-                self.step(gW, gb, lr, momentum)                      # 5. update
-            O = self.forward(X)                                      # bookkeeping on the full sets
-            hist["loss"].append(self.loss(O, T))
-            hist["acc"].append(np.mean(O.argmax(0) == T.argmax(0)) if T.shape[0] > 1 else np.mean((O > 0.5) == T))
-            if X_test is not None:
-                Ot = self.forward(X_test)
-                hist["test_loss"].append(self.loss(Ot, T_test))
-                hist["test_acc"].append(np.mean(Ot.argmax(0) == T_test.argmax(0)))
-            if ep in snapshot_epochs and snapshot_fn is not None:
-                self.snapshots[ep] = snapshot_fn(self)
-        return hist
+MLP.backward = backward
+
+def step(self, gW, gb, lr, momentum=0.0):
+    for l in range(len(self.W)):
+        self.vW[l] = momentum * self.vW[l] - lr * gW[l]          # v ← μ v − η g
+        self.vb[l] = momentum * self.vb[l] - lr * gb[l]
+        self.W[l] += self.vW[l]                                  # θ ← θ + v
+        self.b[l] += self.vb[l]
+
+MLP.step = step
+
+def train_epoch(self, X, T, batch, lr, momentum, r):
+    idx = r.permutation(X.shape[1])                              # 1. shuffle every epoch
+    for s in range(0, X.shape[1], batch):
+        cols = idx[s:s + batch]                                  #    take a mini-batch
+        self.forward(X[:, cols])                                 # 2. forward
+        gW, gb = self.backward(T[:, cols])                       # 3-4. loss gradient by backprop
+        self.step(gW, gb, lr, momentum)                          # 5. update
+
+MLP.train_epoch = train_epoch
+
+def predict(self, X):
+    return self.forward(X).argmax(axis=0)
+
+
+def evaluate(self, X, T):
+    O = self.forward(X)
+    acc = np.mean(O.argmax(0) == T.argmax(0)) if T.shape[0] > 1 else np.mean((O > 0.5) == T)
+    return self.loss(O, T), acc
+
+MLP.predict, MLP.evaluate = predict, evaluate
+
+def fit(self, X, T, X_test=None, T_test=None, epochs=100, batch=32, lr=0.1, momentum=0.0,
+        seed=0, snapshot_epochs=(), snapshot_fn=None):
+    r = np.random.default_rng(seed)
+    hist = {k: [] for k in ("loss", "test_loss", "acc", "test_acc")}
+    self.snapshots = {}
+    for ep in range(1, epochs + 1):
+        self.train_epoch(X, T, batch, lr, momentum, r)
+        loss_tr, acc_tr = self.evaluate(X, T)                    # bookkeeping on the full sets
+        hist["loss"].append(loss_tr); hist["acc"].append(acc_tr)
+        if X_test is not None:
+            loss_te, acc_te = self.evaluate(X_test, T_test)
+            hist["test_loss"].append(loss_te); hist["test_acc"].append(acc_te)
+        if ep in snapshot_epochs and snapshot_fn is not None:
+            self.snapshots[ep] = snapshot_fn(self)
+    return hist
+
+MLP.fit = fit
 
 
 # ---- usage: XOR exactly as in the notes ----

@@ -83,9 +83,9 @@ Column $n$ is exactly the single-example result for example $n$. The bias is **b
 **Why bother?** Three nested Python loops (examples × neurons × inputs) become one call to optimised BLAS code. Measured in the notebook:
 
 ```text
-W 32×64, batch  16:  loops      8.48 ms | matrix  0.0054 ms | ≈ 1,556× faster
-W 64×256, batch  32:  loops    129.10 ms | matrix  0.0257 ms | ≈ 5,030× faster
-W 128×512, batch  64:  loops    728.94 ms | matrix  0.1083 ms | ≈ 6,730× faster
+W 32×64, batch  16:  loops      8.33 ms | matrix  0.0132 ms | ≈ 629× faster
+W 64×256, batch  32:  loops    143.91 ms | matrix  0.0376 ms | ≈ 3,827× faster
+W 128×512, batch  64:  loops   1121.63 ms | matrix  0.1541 ms | ≈ 7,280× faster
 ```
 
 (Exact times depend on your machine; the speed-up is always in the thousands.)
@@ -139,7 +139,6 @@ $x=\begin{bmatrix}1\cr 0.5\end{bmatrix}$, $W^{[1]}=\begin{bmatrix}0.2&0.4\cr -0.
 ```text
 net1 = [ 0.5  -0.35]   o1 = [0.6225 0.4134]
 net2 = [0.3408]   o2 = [0.5844]
-forward() gives the same: [0.5844]
 ```
 
 The same network is used for the backprop step in folder 04.
@@ -190,7 +189,6 @@ def init_params(sizes, rng, scale=None):
     """W^[l]: (n_l × n_{l-1}) Gaussian, std = 1/sqrt(n_{l-1}) unless given; b^[l]: zeros (n_l × 1)."""
     return [(rng.normal(0, scale or 1 / np.sqrt(sizes[l - 1]), (sizes[l], sizes[l - 1])),
              np.zeros((sizes[l], 1))) for l in range(1, len(sizes))]
-
 
 def forward(X, params, hidden="sigmoid", output="sigmoid", verbose=False):
     """X: (n_0 × N), one example per column. Returns final output and cache[l] = (net^[l], o^[l])."""

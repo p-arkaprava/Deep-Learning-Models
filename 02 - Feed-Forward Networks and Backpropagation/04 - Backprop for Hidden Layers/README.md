@@ -137,8 +137,8 @@ Each backward step uses only the $\delta$ of the **next** layer, the weights bet
 In arithmetic, backward ≈ 2 matrix products per layer vs 1 for forward, so a training step costs about 3 forward passes **for all gradients at once**. Brute force needs 2 forward passes **per parameter**:
 
 ```text
-forward    1.21 ms
-backward   1.55 ms   (≈ 1.3× forward on this machine)
+forward    1.38 ms
+backward   1.20 ms   (≈ 0.9× forward on this machine)
 numerical gradient would need 2 × 235,146 forward passes ≈ 0.2 hours
 ```
 
@@ -205,7 +205,6 @@ ACT = {
     "relu":    (lambda z: np.maximum(0.0, z),    lambda net, o: (net > 0).astype(float)),
 }
 
-
 def init_params(sizes, rng, scheme="xavier"):
     """W^[l] ~ N(0, s^2) with s = sqrt(1/n_in) ('xavier') or sqrt(2/n_in) ('he', for ReLU)."""
     params = []
@@ -213,7 +212,6 @@ def init_params(sizes, rng, scheme="xavier"):
         s = np.sqrt((2.0 if scheme == "he" else 1.0) / sizes[l - 1])
         params.append((rng.normal(0, s, (sizes[l], sizes[l - 1])), np.zeros((sizes[l], 1))))
     return params
-
 
 def forward(X, params, hidden="sigmoid", output="sigmoid_mse"):
     """X: (n_0 × N). Returns cache[l] = (net^[l], o^[l]) for l = 0..L."""
@@ -233,7 +231,6 @@ def loss(T, O, output="sigmoid_mse"):
     if output == "sigmoid_mse":
         return 0.5 * np.sum((T - O) ** 2)                          # E = 1/2 ΣΣ (t - o)^2   (notes)
     return -np.sum(T * np.log(O + 1e-12)) / T.shape[1]             # mean cross-entropy
-
 
 def backward(T, params, cache, hidden="sigmoid", output="sigmoid_mse"):
     """Returns deltas δ^[l] (notes' sign: δ = -∂E/∂net) and gradients (∂E/∂W^[l], ∂E/∂b^[l])."""

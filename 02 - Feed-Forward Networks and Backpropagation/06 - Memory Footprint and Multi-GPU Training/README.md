@@ -189,9 +189,6 @@ def softmax(Z):
     E = np.exp(Z)
     return E / E.sum(axis=0, keepdims=True)
 
-OPT_STATES = {"sgd": 0, "momentum": 1, "adam": 2}            # extra numbers stored per parameter
-
-
 def n_params(sizes):
     return sum(sizes[l] * sizes[l - 1] + sizes[l] for l in range(1, len(sizes)))
 
@@ -199,6 +196,8 @@ def n_params(sizes):
 def activation_numbers(sizes, batch):
     """Numbers stored for backprop: the input X plus net^[l] and o^[l] of every layer."""
     return batch * (sizes[0] + 2 * sum(sizes[1:]))
+
+OPT_STATES = {"sgd": 0, "momentum": 1, "adam": 2}            # extra numbers stored per parameter
 
 
 def training_memory(sizes, batch, optimizer="adam", bytes_per=4):
@@ -211,7 +210,6 @@ def training_memory(sizes, batch, optimizer="adam", bytes_per=4):
 def init_params(sizes, rng):
     return [(rng.normal(0, np.sqrt(2 / sizes[l - 1]), (sizes[l], sizes[l - 1])), np.zeros((sizes[l], 1)))
             for l in range(1, len(sizes))]
-
 
 def grads_for(params, X, T):
     """Mean-loss gradients ∂E/∂W, ∂E/∂b of a ReLU / softmax MLP on (X, T); columns = examples."""

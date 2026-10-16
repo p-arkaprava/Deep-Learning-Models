@@ -211,7 +211,7 @@ class ThresholdedPerceptron:
 
     def __init__(self, learning_rate=0.1, epochs=10):
         self.eta = learning_rate          # η : step size of every correction
-        self.epochs = epochs              # how many passes over the dataset
+        self.epochs = epochs              # maximum number of passes over the dataset
         self.w = None                     # weights [w0, w1, ..., wn], created in fit()
 
     @staticmethod
@@ -219,31 +219,43 @@ class ThresholdedPerceptron:
         """Prepend the constant input x0 = 1 to every example (row)."""
         return np.c_[np.ones((X.shape[0], 1)), X]
 
-    def fit(self, X, t, verbose=False):
-        Xb = self.add_bias(X)                         # shape (N, n+1)
-        self.w = np.zeros(Xb.shape[1])                # start with "no opinion"
-        self.w_history = [self.w.copy()]              # weights after every single example
-        self.mistakes = []                            # number of errors in each epoch
-        for epoch in range(self.epochs):
-            errors = 0
-            for xi, ti in zip(Xb, t):                 # one example at a time (online learning)
-                net = np.dot(self.w, xi)              # step 1: weighted sum
-                o = 1 if net > 0 else -1              # step 2: hard threshold
-                dw = self.eta * (ti - o) * xi         # perceptron rule
-                if verbose:
-                    print(f"ep{epoch+1} x={xi[1:]} t={ti:+d} net={net:+.2f} o={o:+d} "
-                          f"Δw={dw + 0.0} → w={self.w + dw + 0.0}")
-                self.w += dw
-                errors += int(ti != o)
-                self.w_history.append(self.w.copy())
-            self.mistakes.append(errors)
-            if errors == 0 and not verbose:           # every example correct → converged
-                break
-        return self
+def output(self, xi):
+    """Forward step for ONE example xi (already contains x0 = 1)."""
+    net = np.dot(self.w, xi)              # step 1: weighted sum
+    o = 1 if net > 0 else -1              # step 2: hard threshold
+    return net, o
 
-    def predict(self, X):
-        """Vectorised prediction for many examples at once."""
-        return np.where(self.add_bias(X) @ self.w > 0, 1, -1)
+ThresholdedPerceptron.output = output    # attach the function to the class as a method
+
+def fit(self, X, t, verbose=False):
+    """Train on X (N × n) with targets t in {-1, +1} using the perceptron rule."""
+    Xb = self.add_bias(X)                         # shape (N, n+1)
+    self.w = np.zeros(Xb.shape[1])                # start with "no opinion"
+    self.w_history = [self.w.copy()]              # weights after every single example (for plots)
+    self.mistakes = []                            # number of errors in each epoch (for plots)
+    for epoch in range(self.epochs):
+        errors = 0
+        for xi, ti in zip(Xb, t):                 # one example at a time (online learning)
+            net, o = self.output(xi)              # forward step (6.2)
+            dw = self.eta * (ti - o) * xi         # perceptron rule
+            if verbose:
+                print(f"ep{epoch+1} x={xi[1:]} t={ti:+d} net={net:+.2f} o={o:+d} "
+                      f"Δw={dw + 0.0} → w={self.w + dw + 0.0}")
+            self.w += dw                          # apply the correction
+            errors += int(ti != o)
+            self.w_history.append(self.w.copy())
+        self.mistakes.append(errors)
+        if errors == 0 and not verbose:           # every example correct → converged
+            break
+    return self                                   # returning self allows  p = Perceptron().fit(...)
+
+ThresholdedPerceptron.fit = fit
+
+def predict(self, X):
+    """Vectorised prediction for many examples (rows of X) at once."""
+    return np.where(self.add_bias(X) @ self.w > 0, 1, -1)
+
+ThresholdedPerceptron.predict = predict
 
 
 # ---- usage ----

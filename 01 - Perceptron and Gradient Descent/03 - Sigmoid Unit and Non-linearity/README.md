@@ -154,7 +154,6 @@ import numpy as np
 def sigmoid(z):
     return 1.0 / (1.0 + np.exp(-z))                    # σ(z) ∈ (0, 1)
 
-
 class SigmoidNeuron:
     """o = σ(w·x), trained by batch gradient descent on E = 1/2 Σ_d (t_d - o_d)^2."""
 
@@ -166,19 +165,27 @@ class SigmoidNeuron:
     def add_bias(X):
         return np.c_[np.ones((X.shape[0], 1)), X]       # x0 = 1
 
-    def fit(self, X, t):
-        Xb = self.add_bias(X)
-        self.w = self.rng.normal(0, 0.5, Xb.shape[1])  # small random start
-        self.loss_history = []
-        for _ in range(self.epochs):
-            o = sigmoid(Xb @ self.w)                    # forward: o_d = σ(net_d)
-            self.loss_history.append(0.5 * np.sum((t - o) ** 2))   # E(w)
-            delta = (t - o) * o * (1 - o)               # δ_d = (t_d - o_d) o_d (1 - o_d)
-            self.w += self.eta * Xb.T @ delta           # Δw_i = η Σ_d δ_d x_id
-        return self
+def predict_proba(self, X):
+    return sigmoid(self.add_bias(X) @ self.w)
 
-    def predict_proba(self, X):
-        return sigmoid(self.add_bias(X) @ self.w)
+SigmoidNeuron.predict_proba = predict_proba
+
+def train_step(self, Xb, t):
+    o = sigmoid(Xb @ self.w)                    # forward: o_d = σ(net_d)
+    E = 0.5 * np.sum((t - o) ** 2)              # cost before this step
+    delta = (t - o) * o * (1 - o)               # δ_d = (t_d - o_d) o_d (1 - o_d)
+    self.w += self.eta * Xb.T @ delta           # Δw_i = η Σ_d δ_d x_id
+    return E
+
+SigmoidNeuron.train_step = train_step
+
+def fit(self, X, t):
+    Xb = self.add_bias(X)
+    self.w = self.rng.normal(0, 0.5, Xb.shape[1])  # small random start
+    self.loss_history = [self.train_step(Xb, t) for _ in range(self.epochs)]
+    return self
+
+SigmoidNeuron.fit = fit
 
 
 def xor_net(X):
