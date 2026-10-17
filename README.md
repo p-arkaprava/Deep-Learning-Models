@@ -49,9 +49,9 @@ Perceptron → FFNN + Backprop → Word2Vec → RNN → LSTM / GRU → Seq2Seq +
 
 | # | Topic | Focus |
 |---|-------|-------|
-| 01 | Perceptron and Gradient Descent | From a single neuron to gradient-based learning |
-| 02 | Feed-Forward Networks and Backpropagation | Multi-layer networks and the backprop derivation |
-| 03 | Text to Numbers and Word Embeddings | One-hot, TF-IDF, and Word2Vec in depth |
+| 01 | [Perceptron and Gradient Descent](01%20-%20Perceptron%20and%20Gradient%20Descent/) | From a single neuron to gradient-based learning |
+| 02 | [Feed-Forward Networks and Backpropagation](02%20-%20Feed-Forward%20Networks%20and%20Backpropagation/) | Multi-layer networks and the backprop derivation |
+| 03 | [Text to Numbers and Word Embeddings](03%20-%20Text%20to%20Numbers%20and%20Word%20Embeddings/) | One-hot, TF-IDF, and Word2Vec in depth |
 | 04 | Computation Graphs and Autodiff | Seeing networks as DAGs the compiler can optimise |
 | 05 | Recurrent Neural Networks | Sequence models with shared weights and a hidden state |
 | 06 | LSTM and GRU | Gated cells that fight vanishing gradients |
@@ -79,15 +79,15 @@ Perceptron → FFNN + Backprop → Word2Vec → RNN → LSTM / GRU → Seq2Seq +
 - [x] 06 - Memory Footprint and Multi-GPU Training
 
 **03 - Text to Numbers and Word Embeddings**
-- [ ] 01 - One-Hot and TF-IDF
-- [ ] 02 - Distributional Semantics and Co-occurrence
-- [ ] 03 - PageRank Analogy
-- [ ] 04 - Word2Vec Model
-- [ ] 05 - Softmax and Cross-Entropy Gradients
-- [ ] 06 - Naive Training
-- [ ] 07 - Negative Sampling
-- [ ] 08 - Hierarchical Softmax
-- [ ] 09 - Comparing Training Variants
+- [x] 01 - One-Hot and TF-IDF
+- [x] 02 - Distributional Semantics and Co-occurrence
+- [x] 03 - PageRank Analogy
+- [x] 04 - Word2Vec Model
+- [x] 05 - Softmax and Cross-Entropy Gradients
+- [x] 06 - Naive Training
+- [x] 07 - Negative Sampling
+- [x] 08 - Hierarchical Softmax
+- [x] 09 - Comparing Training Variants
 
 **04 - Computation Graphs and Autodiff**
 - [ ] 01 - Declarative vs Procedural Form
@@ -152,7 +152,7 @@ Perceptron → FFNN + Backprop → Word2Vec → RNN → LSTM / GRU → Seq2Seq +
 |-------|--------|
 | 01 - Perceptron and Gradient Descent | 🟢 Completed |
 | 02 - Feed-Forward Networks and Backpropagation | 🟢 Completed |
-| 03 - Text to Numbers and Word Embeddings | ⚪ Upcoming |
+| 03 - Text to Numbers and Word Embeddings | 🟢 Completed |
 | 04 - Computation Graphs and Autodiff | ⚪ Upcoming |
 | 05 - Recurrent Neural Networks | ⚪ Upcoming |
 | 06 - LSTM and GRU | ⚪ Upcoming |
@@ -200,7 +200,13 @@ dl-internals/
 └── 11 - Project - LLM with Verifier Loop/
 ```
 
-Each topic folder has a `README.md` listing its sub-topics. Each sub-topic folder has its own `README.md` with a short explanation, a checklist of what to implement, and space for notes, plots, and results.
+Each topic folder has a `README.md` with an overview of the module, its notation and its key results. Each completed sub-topic folder contains:
+
+* `README.md`: the core idea, the variables, the maths step by step, worked examples, figures and the core code;
+* a Jupyter notebook (`.ipynb`) with outputs and plots already rendered;
+* an equivalent plain-Python script (`.py`) with the explanations as comments, runnable with `python <file>.py`.
+
+Figures used by the READMEs live in each module's `figures/` folder.
 
 ---
 
@@ -253,7 +259,8 @@ Update README progress tracker
 |------|--------|
 | 2026-10-08 | Created repo structure from the course notes |
 | 2026-10-09 | Added Perceptron Code and concepts and Explaination |
-| 2026-10-10 | Added Chapter 02 : FFNN, Backpropagation
+| 2026-10-10 | Added Chapter 02 : FFNN, Backpropagation |
+| 2026-10-17 | Added Chapter 03 : One-hot, TF-IDF, distributional semantics, PageRank, word2vec (full softmax, negative sampling, hierarchical softmax); `.py` script versions of every notebook in chapters 01–03 |
 
 ---
 
