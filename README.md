@@ -16,7 +16,7 @@ Every concept in my course notes gets a matching implementation here: first by h
 
 ## 🎯 Objectives
 
-* Implement every model in the course from first principles, not just call a library.
+* Implement  every model in the course from first principles, not just call a library.
 * Derive and code backpropagation by hand, then verify it with gradient checking and PyTorch autograd.
 * Understand why each architecture exists: what broke in the previous one and how the next one fixes it.
 * Count parameters and memory by hand for every model, and confirm the numbers in code.
