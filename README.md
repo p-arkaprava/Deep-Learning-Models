@@ -1,6 +1,6 @@
 # ⚙️ Deep Learning Internals: From Perceptron to GPT
 
-Implementing the core ideas of deep learning **from scratch, in code**, following the path from a single perceptron to feed-forward networks, word embeddings, RNNs, LSTM/GRU, attention, the Transformer, BERT, and GPT.
+Implementing the core ideas of deep  learning **from scratch, in code**, following the path from a single perceptron to feed-forward networks, word embeddings, RNNs, LSTM/GRU, attention, the Transformer, BERT, and GPT.
 
 Every concept in my course notes gets a matching implementation here: first by hand in **NumPy** so the math is visible, then compared against **PyTorch** to confirm it is correct.
 
