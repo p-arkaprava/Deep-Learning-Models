@@ -2,7 +2,7 @@
 
 **Topic:** LSTM and GRU
 
-One hidden state with update gate z and reset gate r.
+One hidden state  with update gate z and reset gate r.
 
 ## To implement
 
