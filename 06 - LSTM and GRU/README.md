@@ -1,6 +1,6 @@
 # LSTM and GRU
 
-Gated cells that fight vanishing gradients
+Gated cells that fight vanishing gradients.
 
 ## Topics
 
