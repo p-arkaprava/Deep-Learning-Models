@@ -1,6 +1,6 @@
 # LSTM Cell
 
-**Topic:** LSTM and GRU
+**Topic:** LSTM and GRU  
 
 Forget, input and output gates plus a protected cell state C_t.
 
