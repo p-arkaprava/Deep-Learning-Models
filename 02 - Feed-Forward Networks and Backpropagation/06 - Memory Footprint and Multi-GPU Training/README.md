@@ -100,7 +100,7 @@ $$g_{\text{full}}=\frac1N\sum_{n=1}^Ng_n=\sum_{k=1}^K\frac{N_k}{N}\ g_k$$
 max |single-GPU − data-parallel| = 5.551115123125783e-17
 ```
 
-**Ring all-reduce.** Instead of sending everything to one server (which would receive $(K-1)\times$ the gradient), the gradient is split into $K$ chunks that circulate around a ring: first summed (reduce-scatter), then shared (all-gather). Each GPU sends only $\frac{2(K-1)}{K}$ gradient sizes, almost independent of $K$.
+**Ring all-reduce.** Instead of sending everything to one server (which would receive $(K-1)\times$ the gradient),  the gradient is split into $K$ chunks that circulate around a ring: first summed (reduce-scatter), then shared (all-gather). Each GPU sends only $\frac{2(K-1)}{K}$ gradient sizes, almost independent of $K$.
 
 ### ZeRO / FSDP: don't store identical copies
 
@@ -257,7 +257,7 @@ print(np.abs(flat(grads_for(params, X, T)) - g_avg).max())      # ~1e-17
 jupyter notebook 06_memory_footprint_and_multi_gpu.ipynb
 ```
 
-## ✍️ Exercises
+## ✍️ Exercises to Try
 1. Add **gradient checkpointing** (store every $\sqrt L$-th layer's activations, recompute the rest). How much is saved for 16 layers?
 2. Add bf16 mixed-precision accounting to `per_gpu_gb`.
 3. Prove that **gradient accumulation** over 4 micro-batches of 16 equals one batch of 64.
